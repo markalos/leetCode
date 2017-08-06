@@ -115,9 +115,116 @@ class Solution(object):
 				nums[idx - 1] = - nums[idx - 1]
 		upper = 3 * pivot
 		return res
-		
+
+	def reversePairs(self, nums):
+		"""
+		:type nums: List[int]
+		:rtype: int
+		"""
+		if not nums:
+			return 0
+		length = len(nums)
+		sortednums = [nums[0]] * length
+		def partition(nums, left, right):
+			if right <= left:
+				return 0
+			if (right - left) == 1:
+				if nums[left] > nums[right]:
+					nums[left], nums[right] = nums[right], nums[left]
+					return int(nums[right] > 2 * nums[left])
+				return int(nums[left] > 2 * nums[right])
+			mid = left + (right - left) / 2
+			rightleft = mid + 1
+			numReversePairs = partition(nums, left, mid) + partition(nums, rightleft, right)
+			doubleidx = rightleft
+			lidx = left
+			while (lidx <= mid):
+				while doubleidx <= right and nums[lidx] > 2 * nums[doubleidx]:
+					doubleidx += 1
+				numReversePairs += (doubleidx - rightleft)
+				lidx += 1
+			lidx, ridx = left, rightleft
+			sidx = 0
+			while (lidx <= mid):
+				while ridx <= right and nums[lidx] > nums[ridx]:
+					sortednums[sidx] = nums[ridx]
+					ridx += 1
+					sidx += 1
+				sortednums[sidx] = nums[lidx]
+				sidx += 1
+				lidx += 1
+			while ridx <= right:
+				sortednums[sidx] = nums[ridx]
+				ridx += 1
+				sidx += 1
+			for i in xrange(sidx):
+				nums[left] = sortednums[i]
+				left += 1
+			return numReversePairs
+
+		return partition(nums, 0, length - 1)
+
+	def groudTruth(self, nums):
+		numReversePairs = 0
+		for i in xrange(len(nums)):
+			for j in xrange(i + 1, len(nums)):
+				if nums[i] > 2 * nums[j]:
+					numReversePairs += 1
+		return numReversePairs
+
+	def generateInts(self, length):
+		import random
+		return random.sample(range(-(4 * length + 1), 4 * length + 1), length)
+
+
+	def longestPalindrome(self, s):
+		"""
+		:type s: str
+		:rtype: int
+		"""
+		if not s :
+			return 0
+		oddOccurrence = [False] * 256
+		longestlength = 1
+		for c in s:
+			idx = ord(c)
+			oddOccurrence[idx] = not oddOccurrence[idx]
+		return (len(s) - (max(0, sum(oddOccurrence) - 1)))
+
+	def shortestPalindrome(self, s):
+		"""
+		:type s: str
+		:rtype: str
+		"""
+		if s == '' :
+			return ''
+		symmetricalRight = 0
+		for i in range(len(s) - 1, 0 , -1):
+			flag = True
+			ridx = i
+			for j in range(0, (i + 1) / 2):
+				if not s[ridx] == s[j]:
+					flag = False
+					break
+				ridx -= 1
+			if flag:
+				symmetricalRight = i
+				break
+		return s[symmetricalRight + 1 :][::-1] + s
+
+	def kmpTable(self, pattern):
+		if pattern == '':
+			return []
+		i, j = 0, -1
+		nextPos = [0] * len(pattern)
+		while i < len(pattern):
+			while j > -1 && x[i] :
+				pass
+
+
 def main():
-	print (Solution().findDuplicates([4,3,2,7,8,2,3,1]))
+	print (Solution().shortestPalindrome("a" * 400000))
+	# print nums
 
 if __name__ == '__main__':
 	main()
